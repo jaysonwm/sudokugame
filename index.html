@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>HTML5 Skeleton</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="sudokucat.css" />
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
+    </script>
+    <![endif]-->
+
+  </head>
+  <body>
+    <div id="sdkBoard"></div>
+    <div id="gameConfig">
+      <section id="diff">
+        <span id="lvl1">Easy</span>
+        <span id="lvl2">Medium</span>
+        <span id="lvl3">Hard</span>
+        <span id="lvl4">Challenge Accepted!</span>
+      </section>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="sudokucat.js"></script>
+    <script>
+      $(function(){
+        $('#sdkBoard').initGrid();
+      });
+    </script>
+  </body>
+</html>
