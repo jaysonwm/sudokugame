@@ -8,21 +8,33 @@ header, section, footer, aside, nav, main, article, figure {
   display: block; 
 }
 
-input{
-  width: 100%;
-  height: 100%;
+#gameTime{
+  display: block;
+  border: 1px solid black;
   text-align: center;
-  font-size: 32px;
-  border: 0;
+  margin: 10px auto;
+  width: 70px;
 }
 
-input:disabled{
-  background-color: white;
+.input_box{
+  font-size: 26px;
+}
+
+.fill_lock{
+  color: #565656;
+}
+
+.duplicate{
+  color: #e74c3c;
+}
+
+.user_fill.duplicate{
+  color: #c0392b;
 }
 
 #sdkBoard, #diff{
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 450px;
 }
 
 #sdkBoard table{
@@ -31,19 +43,35 @@ input:disabled{
 }
 
 #sdkBoard > table{
-  width: 600px;
-  height: 600px;
+  /*width: 600px;
+  height: 600px;*/
   border: 1px solid;
 }
 
 #sdkBoard > table table{
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 }
 
-#sdkBoard > table table td{
+#sdkBoard .box{
   width: 33.33%;
   height: 33.33%;
+  text-align: center;
+  border: 1px dashed #999;
+}
+
+.box.selected{
+  box-shadow: 0 0 3px 3px #3498db;
+  position: relative;
+}
+
+.box.alert{
+  box-shadow: 0 0 3px 5px #e74c3c;
+}
+
+.box.hovering{
+  background-color: #eee;
+  cursor: pointer;
 }
 
 #diff{
