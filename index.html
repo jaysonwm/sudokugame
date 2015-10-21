@@ -3,7 +3,8 @@
   <head>
     <title>HTML5 Skeleton</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="sudokucat.css" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="css/sudokucat.css" />
 
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
@@ -11,21 +12,60 @@
     <![endif]-->
 
   </head>
-  <body>
-    <div id="gameTime">
-      <span class="minute">0</span>:<span class="second">00</span>
+  <body oncontextmenu="return false">
+    <div id="game">
+      <div id="gameHeader">
+        <img id="restart" src="img/restart.svg" />
+        <section id="gameTime">
+          <span class="minute">0</span>:<span class="second">00</span>
+        </section>
+      </div>
+      <div id="sdkBoard"></div>
+      <div id="gameConfig">
+        <section id="altInput">
+          <img id="undo" src="img/undo.svg" />
+          <span>1</span>
+          <span>2</span>
+          <span>3</span>
+          <span>4</span>
+          <span>5</span>
+          <span>6</span>
+          <span>7</span>
+          <span>8</span>
+          <span>9</span>
+          <img id="delete" src="img/delete.svg" />
+        </section>
+        <section id="difficulty">
+          <span id="lvl1">Easy</span>
+          <span id="lvl2">Medium</span>
+          <span id="lvl3">Hard</span>
+          <span id="lvl4">Xpert</span>
+        </section>
+      </div>
     </div>
-    <div id="sdkBoard"></div>
-    <div id="gameConfig">
-      <section id="diff">
-        <span id="lvl1">Easy</span>
-        <span id="lvl2">Medium</span>
-        <span id="lvl3">Hard</span>
-        <span id="lvl4">Challenge Accepted!</span>
-      </section>
+    <div id="overlay">
+      <div class="complete">
+        <span class="title">You Won!</span>
+        <section class="winTime">
+          <span class="winMin">0</span> Min <br/>
+          <span class="winSec">0</span> Sec
+        </section>
+        <span class="continueGame">Continue?</span>
+      </div>
+      <div class="confirmation">
+        <span class="title"></span>
+        <span class="userOk">Yes</span>
+        <span class="userCancel">No</span>
+      </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="sudokucat.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+      if (!window.jQuery) {
+        document.write('<script src="js/jquery-1.11.3.min.js"><\/script>'); 
+        console.log("jQuery local loaded.");
+      }
+    </script>
+    <script src="js/sudokucat.js"></script>
     <script>
       $(function(){
         $('#sdkBoard').initGrid();
