@@ -1,0 +1,251 @@
+@import (reference) "./variable.less";
+@import (reference) "./mixins.less";
+
+/* roboto-300 - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'),
+       url('./fonts/roboto-v15-latin-300.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('./fonts/roboto-v15-latin-300.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+body{
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  background-color: @color-bg-1;
+  color: @color-bg-text;
+  .touch-action-0ms;
+  .disable-selection;
+
+  @media screen and (orientation: portrait){
+    @media (min-width: 320px){
+      zoom: .55;  
+    }
+    
+    @media (min-width: 360px)
+    {
+      zoom: .63;
+    }
+
+    @media (min-width: 414px)
+    {
+      zoom: .73;
+    }
+  }
+}
+
+header, section, footer, aside, nav, main, article, figure {
+  display: block; 
+}
+
+#game{
+  #gameHeader{
+    &:extend(#game #difficulty);
+
+    #restart{
+      .svg-prop;
+      width: 35px;
+      position: absolute;
+      left: -40px;
+      top: 1px;
+    }
+
+    #gameTime{
+      min-width: 70px;
+      font-size: 22px;
+      padding: 5px;
+      text-align: center;
+    }
+  }
+
+  #sdkBoard{
+    margin: 0 auto;
+    max-width: 464px;
+
+    & > table table{
+      width: 150px;
+      height: 150px;
+      background-color: @color-bg-2;
+      border-collapse: collapse;
+    }
+
+    .box{
+      width: 33.33%;
+      height: 33.33%;
+      text-align: center;
+      .transition(all 0.15s ease-out);
+
+      &.selected{
+        .drop-shadow(0 0 3px 3px @color-selected-normal);
+        position: relative;
+      }
+
+      &.alert{
+        .drop-shadow(0 0 3px 3px @color-selected-error);
+        position: relative;
+      }
+
+      &.hovering{
+        background-color: @color-hover;
+        cursor: pointer;
+      }
+
+      .input_box{
+        font-size: 26px;
+        .transition(all 0.3s ease-out);
+
+        &.user_fill{
+          color: @color-fill-normal;
+
+          &.duplicate{
+            color: @color-fill-error;
+          }
+        }
+
+        &.duplicate{
+          color: @color-lock-error;
+        }
+      }
+    }
+  }
+
+  #gameConfig{
+    &:extend(#game #difficulty);
+    margin:0 auto;
+
+    #altInput {
+      &:extend(#game #difficulty);
+
+      span{
+        &:extend(#game #difficulty span);
+        min-width: 38px !important;
+        padding: 5px !important;
+        font-size: 32px !important;
+      }
+
+      #undo{
+        .svg-prop;
+        width: 45px;
+        position: absolute;
+        left: -55px;
+        top: 10px;
+      }
+
+      #delete{
+        .svg-prop;
+        width: 38px;
+        position: absolute;
+        top: 5px;
+        right: -50px;
+      }
+    }
+  }
+
+  #difficulty{
+    margin: 10px auto;
+    display: table;
+    position: relative;
+
+    span{
+      min-width: 70px;
+      display: inline-block;
+      text-align: center;
+      padding: 10px 20px;
+      vertical-align: middle;
+      font-size: 20px;
+      .webkit-tap-transparent;
+      .transition(all 0.15s ease-out);
+    }
+  }
+}
+
+#restart, #undo, #delete, #difficulty span, #altInput span{
+  &:hover{
+    .transform(scale(1.1));
+  }
+
+  &:active{
+    .transform(scale(1.0));
+  }
+}
+
+#restart, #undo, #delete, .continueGame, .userOk, .userCancel{
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+#difficulty span, #altInput span{
+  &:hover{
+    cursor: pointer;
+    background-color: @color-hover;
+  }
+}
+
+#overlay{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: @color-bg-2;
+  display: none;
+  overflow: hidden;
+
+  .confirmation{
+    &:extend(#overlay .complete);
+    height: 136px !important;
+    overflow: hidden !important;
+
+    & > span{
+      &:extend(#overlay .complete > span);
+      font-size: 32px !important;
+
+      &.userOk{
+        .popup-button;
+        float: left;
+      }
+
+      &.userCancel{
+        .popup-button;
+        float: right;
+      }
+    }
+  }
+
+  .complete{
+    width: 370px;
+    height: 328px;
+    color: @color-bg-text;
+    position: absolute;
+    top: 200%;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    border-radius: 5px;
+    .drop-shadow(0 0 0 1px);
+    padding: 5px;
+
+    & > span{
+      width: 100%;
+      display: block;
+      text-align: center;
+      font-size: 40px;
+      padding: 15px 0;
+    }
+
+    .winTime{
+      font-size: 64px !important;
+      background-color: @color-button;
+      color: @color-button-text;
+      padding: 9px 0;
+      text-align: center;
+    }
+  }
+}
