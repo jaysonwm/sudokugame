@@ -65,13 +65,15 @@ header, section, footer, aside, nav, main, article, figure {
 
   #sdkBoard{
     margin: 0 auto;
-    max-width: 464px;
+    width: 464px;
+    height: 464px;
 
-    & > table table{
+    & .sub_grid{
       width: 150px;
       height: 150px;
       background-color: @color-bg-2;
       border-collapse: collapse;
+      .transition(background-color 150ms ease-out);
     }
 
     .box{
@@ -162,9 +164,17 @@ header, section, footer, aside, nav, main, article, figure {
       .transition(all 0.15s ease-out);
     }
   }
+
+  #about{
+    .svg-prop;
+    width: 27px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 }
 
-#restart, #undo, #delete, #difficulty span, #altInput span{
+#restart, #undo, #delete, #about, #difficulty span, #altInput span, #exit{
   &:hover{
     .transform(scale(1.1));
   }
@@ -174,7 +184,7 @@ header, section, footer, aside, nav, main, article, figure {
   }
 }
 
-#restart, #undo, #delete, .continueGame, .userOk, .userCancel{
+#restart, #undo, #delete, #about, .continueGame, .userOk, .userCancel, #exit{
   &:hover{
     cursor: pointer;
   }
@@ -198,9 +208,9 @@ header, section, footer, aside, nav, main, article, figure {
   overflow: hidden;
 
   .confirmation{
-    &:extend(#overlay .complete);
+    &:extend(#overlay .about);
     height: 136px !important;
-    overflow: hidden !important;
+    // overflow: hidden !important;
 
     & > span{
       &:extend(#overlay .complete > span);
@@ -219,18 +229,8 @@ header, section, footer, aside, nav, main, article, figure {
   }
 
   .complete{
-    width: 370px;
-    height: 328px;
-    color: @color-bg-text;
-    position: absolute;
-    top: 200%;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    margin: auto;
-    border-radius: 5px;
-    .drop-shadow(0 0 0 1px);
-    padding: 5px;
+    &:extend(#overlay .about);
+    height: 328px !important;
 
     & > span{
       width: 100%;
@@ -246,6 +246,64 @@ header, section, footer, aside, nav, main, article, figure {
       color: @color-button-text;
       padding: 9px 0;
       text-align: center;
+    }
+  }
+
+  .about{
+    width: 370px;
+    height: 463px;
+    color: @color-bg-text;
+    position: absolute;
+    top: 200%;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    border-radius: 5px;
+    .drop-shadow(0 0 0 1px);
+    padding: 5px;
+    text-transform: none;
+
+    #exit{
+      .svg-prop;
+      width: 30px;
+      position: absolute;
+      top: -25px;
+      right: -25px;
+      padding: 10px;
+      border: 1px solid;
+      border-radius: 50px;
+      background-color: @color-bg-2;
+    }
+
+    & > span{
+      display: block;
+      padding: 10px 0;
+
+      &.title{
+        text-align: center;
+        font-size: 32px;
+      }
+
+      &.desc{
+        text-align: justify;
+        margin: 0 10px;
+
+        &.aboutGame{
+          text-align: center;
+        }
+      }
+
+      a{
+        color: #F1C40F;
+      }
+
+    }
+
+    .howToPlayList{
+      text-align: justify;
+      padding-left: 30px;
+      margin: 10px 10px 10px 0;
     }
   }
 }
