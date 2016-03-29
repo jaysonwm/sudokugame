@@ -1,71 +1,80 @@
-// ES6 format
+"use strict";
 
-(function(){
-  Array.prototype.clone = function(){
-		// deep copy of an array that contain an array within an array
-		let new_arr = [];
+(function () {
+  Array.prototype.clone = function () {
+    var new_arr = [];
 
-		for(let _this of this){
-			if(Array.isArray(_this)){
-				let new_sub_arr = _this.clone();
-				new_arr.push(new_sub_arr);
-			} else{
-				new_arr.push(_this);
-			}
-		}
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
 
-		return new_arr;
-	}
+    try {
+      for (var _iterator = this[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var _this = _step.value;
 
-	Array.prototype.compare = function(array){
-		for(let i = 0; i < this.length; i++){
-			if(Array.isArray(this[i])){
-				if(!this[i].compare(array[i]))	return false;
-			} else if(this[i] !== array[i]){
-				return false;
-			}
-		}
+        if (Array.isArray(_this)) {
+          var new_sub_arr = _this.clone();
+          new_arr.push(new_sub_arr);
+        } else {
+          new_arr.push(_this);
+        }
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
 
-		return true;
-	}
+    return new_arr;
+  };
 
-	let basic_array = [
-    [2,9,1,5,7,3,6,8,4],
-    [7,6,3,4,8,2,9,1,5],
-    [4,8,5,6,9,1,3,7,2],
-    [1,5,4,9,3,7,2,6,8],
-    [6,2,8,1,4,5,7,9,3],
-    [9,3,7,8,2,6,4,5,1],
-    [5,7,9,3,1,4,8,2,6],
-    [3,1,2,7,6,8,5,4,9],
-    [8,4,6,2,5,9,1,3,7]
-  ];
+  Array.prototype.compare = function (array) {
+    for (var i = 0; i < this.length; i++) {
+      if (Array.isArray(this[i])) {
+        if (!this[i].compare(array[i])) return false;
+      } else if (this[i] !== array[i]) {
+        return false;
+      }
+    }
 
-  let game_array = [],
-  		undo_arr = [],
-  		key_pressed = false,
-  		game_ongoing = false,
-  		curr_lvl,
-  		empty_box,
-      timer;
+    return true;
+  };
 
-  let shuffleNumbers = () => {
-    // Shuffle between 2 numbers for 30 - 40 times
-    let shuffleCount = Math.ceil(Math.random() * 10) + 30;
+  var basic_array = [[2, 9, 1, 5, 7, 3, 6, 8, 4], [7, 6, 3, 4, 8, 2, 9, 1, 5], [4, 8, 5, 6, 9, 1, 3, 7, 2], [1, 5, 4, 9, 3, 7, 2, 6, 8], [6, 2, 8, 1, 4, 5, 7, 9, 3], [9, 3, 7, 8, 2, 6, 4, 5, 1], [5, 7, 9, 3, 1, 4, 8, 2, 6], [3, 1, 2, 7, 6, 8, 5, 4, 9], [8, 4, 6, 2, 5, 9, 1, 3, 7]];
 
-    for(let i = 0; i < shuffleCount; i++){
-      let n1 = Math.ceil(Math.random() * 9),
-          n2;
+  var game_array = [],
+      undo_arr = [],
+      key_pressed = false,
+      game_ongoing = false,
+      curr_lvl = undefined,
+      empty_box = undefined,
+      timer = undefined;
 
-      do{
+  var shuffleNumbers = function shuffleNumbers() {
+    var shuffleCount = Math.ceil(Math.random() * 10) + 30;
+
+    for (var i = 0; i < shuffleCount; i++) {
+      var n1 = Math.ceil(Math.random() * 9),
+          n2 = undefined;
+
+      do {
         n2 = Math.ceil(Math.random() * 9);
-      } while(n1 == n2)
-      
-      for(let row = 0; row < 9; row++){
-        for(let col = 0; col < 9; col++){
-          if(basic_array[row][col] == n1){
+      } while (n1 == n2);
+
+      for (var row = 0; row < 9; row++) {
+        for (var col = 0; col < 9; col++) {
+          if (basic_array[row][col] == n1) {
             basic_array[row][col] = n2;
-          } else if(basic_array[row][col] == n2){
+          } else if (basic_array[row][col] == n2) {
             basic_array[row][col] = n1;
           }
         }
@@ -73,115 +82,112 @@
     }
 
     console.log("Shuffle numbers for " + shuffleCount + " times.");
-  }
+  };
 
-  let shuffleReflect = () => {
-		// Shuffle by reflecting according to axis
-		let refl_arr = ['x', 'y', 'xy', 'yx'];
-		let axis = refl_arr[Math.floor(Math.random() * 4)];
+  var shuffleReflect = function shuffleReflect() {
+    var refl_arr = ['x', 'y', 'xy', 'yx'];
+    var axis = refl_arr[Math.floor(Math.random() * 4)];
 
-		let new_arr = [];
+    var new_arr = [];
 
-		switch(axis){
-			case 'x':
-				for (let row = 0; row < 9; row++) {
-					new_arr.push(basic_array[8 - row]);
-				}
-				break;
+    switch (axis) {
+      case 'x':
+        for (var row = 0; row < 9; row++) {
+          new_arr.push(basic_array[8 - row]);
+        }
+        break;
 
-			case 'y':
-				for (let row = 0; row < 9; row++) {
-					let new_sub_arr = [];
+      case 'y':
+        for (var row = 0; row < 9; row++) {
+          var new_sub_arr = [];
 
-					for (let col = 0; col < 9; col++) {
-						new_sub_arr.push(basic_array[row][8 - col]);
-					}
+          for (var col = 0; col < 9; col++) {
+            new_sub_arr.push(basic_array[row][8 - col]);
+          }
 
-					new_arr.push(new_sub_arr);
-				}
-				break;
+          new_arr.push(new_sub_arr);
+        }
+        break;
 
-			case 'xy':
-				for (let col = 0; col < 9; col++) {
-					let new_sub_arr = [];
+      case 'xy':
+        for (var col = 0; col < 9; col++) {
+          var new_sub_arr = [];
 
-					for (let row = 0; row < 9; row++) {
-						new_sub_arr.push(basic_array[row][col]);
-					}
+          for (var row = 0; row < 9; row++) {
+            new_sub_arr.push(basic_array[row][col]);
+          }
 
-					new_arr.push(new_sub_arr);
-				}
-				break;
+          new_arr.push(new_sub_arr);
+        }
+        break;
 
-			case 'yx':
-				for (let col = 0; col < 9; col++) {
-					let new_sub_arr = [];
+      case 'yx':
+        for (var col = 0; col < 9; col++) {
+          var new_sub_arr = [];
 
-					for (let row = 0; row < 9; row++) {
-						new_sub_arr.push(basic_array[8 - row][8 - col]);
-					}
+          for (var row = 0; row < 9; row++) {
+            new_sub_arr.push(basic_array[8 - row][8 - col]);
+          }
 
-					new_arr.push(new_sub_arr);
-				}
-				break;
-		}
+          new_arr.push(new_sub_arr);
+        }
+        break;
+    }
 
-		console.log("Reflect : " + axis);
+    console.log("Reflect : " + axis);
 
-		basic_array = new_arr;
-  }
+    basic_array = new_arr;
+  };
 
-  let shuffleRotate = () => {
-		// Shuffle by rotating the board to certain degree
-		let deg = Math.ceil(Math.random() * 3);
+  var shuffleRotate = function shuffleRotate() {
+    var deg = Math.ceil(Math.random() * 3);
 
-		for (let i = 0; i < deg; i++) {
-			let new_arr = [];
+    for (var i = 0; i < deg; i++) {
+      var new_arr = [];
 
-			for (let col = 0; col < 9; col++) {
-				let new_sub_arr = [];
+      for (var col = 0; col < 9; col++) {
+        var new_sub_arr = [];
 
-				for (let row = 0; row < 9; row++) {
-					new_sub_arr.push(basic_array[8 - row][col]);
-				}
+        for (var row = 0; row < 9; row++) {
+          new_sub_arr.push(basic_array[8 - row][col]);
+        }
 
-				new_arr.push(new_sub_arr);
-			}
+        new_arr.push(new_sub_arr);
+      }
 
-			basic_array = new_arr;
-		}
+      basic_array = new_arr;
+    }
 
-		console.log("Rotate : " + (deg * 90) + " deg");
-	}
+    console.log("Rotate : " + deg * 90 + " deg");
+  };
 
-	let shuffleSmallRow = () => {
-    // Shuffle within inter-row
-    let shuffleCount = Math.ceil(Math.random() * 10);
+  var shuffleSmallRow = function shuffleSmallRow() {
+    var shuffleCount = Math.ceil(Math.random() * 10);
 
-    for(let i = 0; i < shuffleCount; i++){
-      let row = [];
-      let mul = 3 * (Math.floor(Math.random() * 3));
+    for (var i = 0; i < shuffleCount; i++) {
+      var row = [];
+      var mul = 3 * Math.floor(Math.random() * 3);
 
-      for(let j = 0; j < 3; j++){
+      for (var j = 0; j < 3; j++) {
         row.push(j + mul);
       }
 
-      let n1 = Math.floor(Math.random() * (row[row.length - 1] - row[0] + 1)) + row[0],
-          n2;
+      var n1 = Math.floor(Math.random() * (row[row.length - 1] - row[0] + 1)) + row[0],
+          n2 = undefined;
 
-      do{
+      do {
         n2 = Math.floor(Math.random() * (row[row.length - 1] - row[0] + 1)) + row[0];
-      } while(n1 == n2)
+      } while (n1 == n2);
 
-      let new_arr = [];
+      var new_arr = [];
 
-      for(let row  = 0; row < 9; row++){
-        if(row == n1){
+      for (var _row = 0; _row < 9; _row++) {
+        if (_row == n1) {
           new_arr.push(basic_array[n2]);
-        } else if(row == n2){
+        } else if (_row == n2) {
           new_arr.push(basic_array[n1]);
-        } else{
-          new_arr.push(basic_array[row]);
+        } else {
+          new_arr.push(basic_array[_row]);
         }
       }
 
@@ -189,39 +195,38 @@
     }
 
     console.log("Shuffle inter-row for : " + shuffleCount + " times");
-  }	
+  };
 
-  let shuffleSmallCol = () => {
-    // Shuffle within inter-column
-    let shuffleCount = Math.ceil(Math.random() * 10);
+  var shuffleSmallCol = function shuffleSmallCol() {
+    var shuffleCount = Math.ceil(Math.random() * 10);
 
-    for(let i = 0; i < shuffleCount; i++){
-      let col = [];
-      let mul = 3 * (Math.floor(Math.random() * 3));
+    for (var i = 0; i < shuffleCount; i++) {
+      var col = [];
+      var mul = 3 * Math.floor(Math.random() * 3);
 
-      for(let i = 0; i < 3; i++){
-        col.push(i + mul);
+      for (var _i = 0; _i < 3; _i++) {
+        col.push(_i + mul);
       }
 
-      let n1 = Math.floor(Math.random() * (col[col.length - 1] - col[0] + 1)) + col[0],
-          n2;
+      var n1 = Math.floor(Math.random() * (col[col.length - 1] - col[0] + 1)) + col[0],
+          n2 = undefined;
 
-      do{
+      do {
         n2 = Math.floor(Math.random() * (col[col.length - 1] - col[0] + 1)) + col[0];
-      } while(n1 == n2)
+      } while (n1 == n2);
 
-      let new_arr = []
+      var new_arr = [];
 
-      for(let row  = 0; row < 9; row++){
-        let new_sub_arr = [];
+      for (var row = 0; row < 9; row++) {
+        var new_sub_arr = [];
 
-        for(let col  = 0; col < 9; col++){
-          if(col == n1){
+        for (var _col = 0; _col < 9; _col++) {
+          if (_col == n1) {
             new_sub_arr.push(basic_array[row][n2]);
-          } else if(col == n2){
+          } else if (_col == n2) {
             new_sub_arr.push(basic_array[row][n1]);
-          } else{
-            new_sub_arr.push(basic_array[row][col]);
+          } else {
+            new_sub_arr.push(basic_array[row][_col]);
           }
         }
 
@@ -232,39 +237,38 @@
     }
 
     console.log("Shuffle inter-column for : " + shuffleCount + " times");
-  }
+  };
 
-  let shuffleBigRow = () => {
-    // Shuffle within outer-row
-    let shuffleCount = Math.ceil(Math.random() * 5);
+  var shuffleBigRow = function shuffleBigRow() {
+    var shuffleCount = Math.ceil(Math.random() * 5);
 
-    for(let i = 0; i < shuffleCount; i++){
-      let arr_row = [0,3,6];
+    for (var i = 0; i < shuffleCount; i++) {
+      var arr_row = [0, 3, 6];
 
-      let n1 = Math.floor(Math.random() * 3),
-          n2;
+      var n1 = Math.floor(Math.random() * 3),
+          n2 = undefined;
 
-      do{
+      do {
         n2 = Math.floor(Math.random() * 3);
-      } while(n1 == n2)
+      } while (n1 == n2);
 
-      let new_arr = [];
+      var new_arr = [];
 
-      for(let row = 0; row < 9; row = row + 3){
-        let curr;
+      for (var row = 0; row < 9; row = row + 3) {
+        var curr = undefined;
 
-        if(row == arr_row[n1]){
+        if (row == arr_row[n1]) {
           new_arr.push(basic_array[arr_row[n2]]);
           curr = arr_row[n2];
-        } else if(row == arr_row[n2]){
+        } else if (row == arr_row[n2]) {
           new_arr.push(basic_array[arr_row[n1]]);
           curr = arr_row[n1];
-        } else{
+        } else {
           new_arr.push(basic_array[row]);
           curr = row;
         }
 
-        for(let count = 1; count < 3; count++){
+        for (var count = 1; count < 3; count++) {
           new_arr.push(basic_array[curr + count]);
         }
       }
@@ -272,43 +276,42 @@
       basic_array = new_arr;
     }
 
-    console.log("Shuffle outer-row for : " + shuffleCount + " times.")
-  }
+    console.log("Shuffle outer-row for : " + shuffleCount + " times.");
+  };
 
-  let shuffleBigCol = () => {
-    // Shuffle within outer-column
-    let shuffleCount = Math.ceil(Math.random() * 5);
+  var shuffleBigCol = function shuffleBigCol() {
+    var shuffleCount = Math.ceil(Math.random() * 5);
 
-    for(let i = 0; i < shuffleCount; i++){
-      let arr_col = [0,3,6];
+    for (var i = 0; i < shuffleCount; i++) {
+      var arr_col = [0, 3, 6];
 
-      let n1 = Math.floor(Math.random() * 3),
-          n2;
+      var n1 = Math.floor(Math.random() * 3),
+          n2 = undefined;
 
-      do{
+      do {
         n2 = Math.floor(Math.random() * 3);
-      } while(n1 == n2)
+      } while (n1 == n2);
 
-      let new_arr = [];
+      var new_arr = [];
 
-      for(let row  = 0; row < 9; row++){
-        let new_sub_arr = [];
+      for (var row = 0; row < 9; row++) {
+        var new_sub_arr = [];
 
-        for(let col = 0; col < 9; col = col + 3){
-          let curr;
+        for (var col = 0; col < 9; col = col + 3) {
+          var curr = undefined;
 
-          if(col == arr_col[n1]){
+          if (col == arr_col[n1]) {
             new_sub_arr.push(basic_array[row][arr_col[n2]]);
             curr = arr_col[n2];
-          } else if(col == arr_col[n2]){
+          } else if (col == arr_col[n2]) {
             new_sub_arr.push(basic_array[row][arr_col[n1]]);
             curr = arr_col[n1];
-          } else{
+          } else {
             new_sub_arr.push(basic_array[row][col]);
             curr = col;
           }
 
-          for(let count = 1; count < 3; count++){
+          for (var count = 1; count < 3; count++) {
             new_sub_arr.push(basic_array[row][curr + count]);
           }
         }
@@ -320,88 +323,47 @@
     }
 
     console.log("Shuffle outer-column for : " + shuffleCount + " times.");
-  }
+  };
 
-  let shuffleRandom = () => {
-    // Randomize shuffling function call
-    let shuffle_arr = [
-      shuffleNumbers, shuffleReflect, shuffleRotate,
-      shuffleSmallRow, shuffleSmallCol, shuffleBigCol,
-      shuffleBigRow
-    ];
+  var shuffleRandom = function shuffleRandom() {
+    var shuffle_arr = [shuffleNumbers, shuffleReflect, shuffleRotate, shuffleSmallRow, shuffleSmallCol, shuffleBigCol, shuffleBigRow];
 
-    // Randomly pick a shuffling function to call, then delete the function from
-    // the array to prevent calling again. Repeat until there is no function to
-    // delete.
-    let index;
+    var index = undefined;
 
     while (shuffle_arr.length != 0) {
-			index = Math.floor(Math.random() * shuffle_arr.length);
-			shuffle_arr[index]();
-			shuffle_arr.splice(index, 1);
+      index = Math.floor(Math.random() * shuffle_arr.length);
+      shuffle_arr[index]();
+      shuffle_arr.splice(index, 1);
     }
+  };
 
-   //  // The idea is to pick random function and throw it to the end of the array,
-   //  // and reduce the count by 1 in each loop, so the last function in the array
-   //  // won't be picked again.
-   //  let curr_idx = shuffle_arr.length,
-   //      random_idx, 
-   //      temp;
+  var generateGrid = function generateGrid(lvl, box, row, col) {
+    var count_box = lvl ? 0 : box;
+    var count_row = lvl ? 1 : row;
+    var count_col = lvl ? 1 : col;
 
-   //  while(curr_idx != 0){
-   //    random_idx = Math.floor(Math.random() * curr_idx);
-   //    --curr_idx;
+    var table_grid = document.createElement('table');
 
-   //    temp = shuffle_arr[curr_idx];
-   //    shuffle_arr[curr_idx] = shuffle_arr[random_idx];
-   //    shuffle_arr[random_idx] = temp;
-   //  }
-
-   //  // start function call
-   //  let index;
-   //  while(index){
-			// index = Math.floor(Math.random() * shuffle_arr.length);
-			// shuffle_arr[index]();
-			// shuffle_arr.splice(index, 1);
-   //  }
-    
-   //  for(let func of shuffle_arr){
-			// func();
-   //  }
-  }
-
-  let generateGrid = (lvl, box, row, col) => {
-    // Generate table grid for the game
-    let count_box = lvl ? 0 : box;
-    let count_row = lvl ? 1 : row;
-    let count_col = lvl ? 1 : col;
-
-    // In the grid, each column in each row will have another table inside, using
-    // recursive method, call this function again when creating the second table
-    // element in each column.
-    let table_grid = document.createElement('table');
-    // table_grid.className = !lvl ? 'sub_grid' : "";
-
-    for(let i = 0; i < 3; i++){
-      let table_row = document.createElement('tr');
+    for (var i = 0; i < 3; i++) {
+      var table_row = document.createElement('tr');
       table_row.className = !lvl ? 'row_' + count_row++ : "";
 
-      for(let j = 0; j < 3; j++){
-        let table_col = document.createElement('td');
+      for (var j = 0; j < 3; j++) {
+        var table_col = document.createElement('td');
 
-        if(lvl){
+        if (lvl) {
           table_col.id = 'Box_' + String.fromCharCode(65 + i) + (j + 1);
 
-          let table_grid2 = generateGrid(false, count_box, count_row, count_col);
+          var table_grid2 = generateGrid(false, count_box, count_row, count_col);
           table_col.appendChild(table_grid2);
 
           count_box += 3;
           count_col += 3;
         } else {
-          table_col.id = 'box_' + (++count_box);
+          table_col.id = 'box_' + ++count_box;
           table_col.className = 'col_' + count_col++ + ' box';
 
-          let input = document.createElement('span');
+          var input = document.createElement('span');
           input.className = 'input_box';
           table_col.appendChild(input);
         }
@@ -417,21 +379,19 @@
     }
 
     return table_grid;
-  }
+  };
 
-  let generateGame = () => {
-    // Based on level picked, randomly pick numbers from each row, 
-    // and remove it
+  var generateGame = function generateGame() {
     game_array = basic_array.clone();
 
-    for(let row = 0; row < 9; row++){
-      let random_arr = [];
+    for (var row = 0; row < 9; row++) {
+      var random_arr = [];
 
-      for(let i = 0; i < Math.floor(Math.random() * 2) + curr_lvl; i++){
-        let random_col = Math.floor(Math.random() * 9);
+      for (var i = 0; i < Math.floor(Math.random() * 2) + curr_lvl; i++) {
+        var random_col = Math.floor(Math.random() * 9);
 
-        for(let count = 0; count < random_arr.length; count++){
-          if(random_arr[count] == random_col){
+        for (var count = 0; count < random_arr.length; count++) {
+          if (random_arr[count] == random_col) {
             random_col = Math.floor(Math.random() * 9);
             count = -1;
           }
@@ -441,37 +401,33 @@
         random_arr.push(random_col);
       }
     }
-  }
+  };
 
-  let validateRowCol = (arr) => {
-    // If total of each row and total of each column is 45, then proceed, else 
-    // the game is not valid and not playable, which is impossible, unless
-    // there is something wrong with the shuffling.
-    for(let row = 0; row < 9; row++){
-      let total_c_val = 0,
+  var validateRowCol = function validateRowCol(arr) {
+    for (var row = 0; row < 9; row++) {
+      var total_c_val = 0,
           total_r_val = 0;
 
-      for(let col = 0; col < 9; col++){
+      for (var col = 0; col < 9; col++) {
         total_c_val += arr[row][col];
         total_r_val += arr[col][row];
       }
 
-      if(total_c_val != 45 || total_r_val != 45){
+      if (total_c_val != 45 || total_r_val != 45) {
         return false;
       }
     }
 
     return true;
-  }
+  };
 
-  let fillBoard = () => {
-    // Fill the grid with numbers
-    let arr_col = 0,
+  var fillBoard = function fillBoard() {
+    var arr_col = 0,
         arr_row = 0;
 
-    if(validateRowCol(basic_array)){
-      for(let i = 1; i <= 81; i++){
-        if(game_array[arr_row][arr_col] != 0){
+    if (validateRowCol(basic_array)) {
+      for (var i = 1; i <= 81; i++) {
+        if (game_array[arr_row][arr_col] != 0) {
           $('#box_' + i + ' .input_box').text(game_array[arr_row][arr_col]);
           $('#box_' + i + ' .input_box').addClass('fill_lock');
         } else {
@@ -481,292 +437,389 @@
 
         arr_col++;
 
-        if(i % 9 == 0){
+        if (i % 9 == 0) {
           arr_row++;
           arr_col = 0;
         }
       }
 
       console.log("Board filled.");
-      console.log("Empty : " + empty_box );
-    }    
-  }
+      console.log("Empty : " + empty_box);
+    }
+  };
 
-  let getRelatedBoxes = (elem) => {
-			// Get related row, column and parent box for the selected box
-			let row = [],
-					col = [],
-					box = [];
+  var getRelatedBoxes = function getRelatedBoxes(elem) {
+    var row = [],
+        col = [],
+        box = [];
 
-			let this_row = '.' + elem.closest('tr[class^="row_"]').attr('class'),
-					this_col = '.' + elem.closest('td[class^="col_"]').attr('class').split(" ")[0],
-					this_box = '#' + elem.closest('td[id^="Box_"]').attr('id');
+    var this_row = '.' + elem.closest('tr[class^="row_"]').attr('class'),
+        this_col = '.' + elem.closest('td[class^="col_"]').attr('class').split(" ")[0],
+        this_box = '#' + elem.closest('td[id^="Box_"]').attr('id');
 
-			$(this_row).each(function() {
-					$(this).find('.input_box').each(function() {
-							if ($(this).text() != "") {
-									row.push({
-											id: $(this).parent().attr('id'),
-											val: $(this).text()
-									});
-							}
-					});
-			});
-
-			$(this_col).each(function() {
-					$(this).find('.input_box').each(function() {
-							if ($(this).text() != "") {
-									col.push({
-											id: $(this).parent().attr('id'),
-											val: $(this).text()
-									});
-							}
-					});
-			});
-
-			$(this_box).find('.input_box').each(function() {
-					if ($(this).text() != "") {
-							box.push({
-									id: $(this).parent().attr('id'),
-									val: $(this).text()
-							});
-					}
-			});
-
-			return {
-					row, col, box
-			};
-  }
-
-  let recordVal = (val) => {
-    // Push object containing box id, previous value and current value to the
-    // array
-    undo_arr.push({
-      box_id : '#' + $('.selected').attr('id'),
-      prev_box_val : $('.selected .user_fill').text(),
-      curr_box_val : val
+    $(this_row).each(function () {
+      $(this).find('.input_box').each(function () {
+        if ($(this).text() != "") {
+          row.push({
+            id: $(this).parent().attr('id'),
+            val: $(this).text()
+          });
+        }
+      });
     });
-  }
 
-  let checkDuplicate = (elem, bool) =>  {
-    // Check whether entered number already has another number exist in the same
-    // row, column, or parent box, and when a number is removed, check whether the 
-    // duplicate numbers still valid 
-    let val = elem.text();
-    let dul = getRelatedBoxes(elem);
+    $(this_col).each(function () {
+      $(this).find('.input_box').each(function () {
+        if ($(this).text() != "") {
+          col.push({
+            id: $(this).parent().attr('id'),
+            val: $(this).text()
+          });
+        }
+      });
+    });
 
-    if(bool){
-      for(let row of dul.row){
-        let box_val = $('#' + row.id + ' .input_box');
+    $(this_box).find('.input_box').each(function () {
+      if ($(this).text() != "") {
+        box.push({
+          id: $(this).parent().attr('id'),
+          val: $(this).text()
+        });
+      }
+    });
 
-        if(row.val == val && row.id != elem.parent().attr('id')){
-          box_val.addClass('duplicate');
-          elem.addClass('duplicate');
+    return {
+      row: row, col: col, box: box
+    };
+  };
+
+  var recordVal = function recordVal(val) {
+    undo_arr.push({
+      box_id: '#' + $('.selected').attr('id'),
+      prev_box_val: $('.selected .user_fill').text(),
+      curr_box_val: val
+    });
+  };
+
+  var checkDuplicate = function checkDuplicate(elem, bool) {
+    var val = elem.text();
+    var dul = getRelatedBoxes(elem);
+
+    if (bool) {
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = dul.row[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var row = _step2.value;
+
+          var box_val = $('#' + row.id + ' .input_box');
+
+          if (row.val == val && row.id != elem.parent().attr('id')) {
+            box_val.addClass('duplicate');
+            elem.addClass('duplicate');
+          }
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
         }
       }
 
-      for(let col of dul.col){
-        let box_val = $('#' + col.id + ' .input_box');
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
-        if(col.val == val && col.id != elem.parent().attr('id')){
-          box_val.addClass('duplicate');
-          elem.addClass('duplicate');
+      try {
+        for (var _iterator3 = dul.col[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var col = _step3.value;
+
+          var box_val = $('#' + col.id + ' .input_box');
+
+          if (col.val == val && col.id != elem.parent().attr('id')) {
+            box_val.addClass('duplicate');
+            elem.addClass('duplicate');
+          }
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
         }
       }
 
-      for(let box of dul.box){
-        let box_val = $('#' + box.id + ' .input_box');
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
 
-        if(box.val == val && box.id != elem.parent().attr('id')){
-          box_val.addClass('duplicate');
-          elem.addClass('duplicate');
+      try {
+        for (var _iterator4 = dul.box[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var box = _step4.value;
+
+          var box_val = $('#' + box.id + ' .input_box');
+
+          if (box.val == val && box.id != elem.parent().attr('id')) {
+            box_val.addClass('duplicate');
+            elem.addClass('duplicate');
+          }
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
         }
       }
     } else {
-			let this_parent = elem.parent(),
-					val = elem.text();
+      var this_parent = elem.parent(),
+          _val = elem.text();
 
-      let bool_row = false,
+      var bool_row = false,
           bool_col = false,
           bool_box = false;
 
-      for(let row of dul.row){
-        if(row.val == val && row.id != this_parent.attr('id')){
-          bool_row = true;
+      var _iteratorNormalCompletion5 = true;
+      var _didIteratorError5 = false;
+      var _iteratorError5 = undefined;
+
+      try {
+        for (var _iterator5 = dul.row[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var row = _step5.value;
+
+          if (row.val == _val && row.id != this_parent.attr('id')) {
+            bool_row = true;
+          }
+        }
+      } catch (err) {
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion5 && _iterator5.return) {
+            _iterator5.return();
+          }
+        } finally {
+          if (_didIteratorError5) {
+            throw _iteratorError5;
+          }
         }
       }
 
-      for(let col of dul.col){
-				if(col.val == val && col.id != this_parent.attr('id')) {
-          bool_col = true;
+      var _iteratorNormalCompletion6 = true;
+      var _didIteratorError6 = false;
+      var _iteratorError6 = undefined;
+
+      try {
+        for (var _iterator6 = dul.col[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+          var col = _step6.value;
+
+          if (col.val == _val && col.id != this_parent.attr('id')) {
+            bool_col = true;
+          }
+        }
+      } catch (err) {
+        _didIteratorError6 = true;
+        _iteratorError6 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion6 && _iterator6.return) {
+            _iterator6.return();
+          }
+        } finally {
+          if (_didIteratorError6) {
+            throw _iteratorError6;
+          }
         }
       }
 
-      for(let box of dul.box){
-        if(box.val == val && box.id != this_parent.attr('id')){
-          bool_box = true;
+      var _iteratorNormalCompletion7 = true;
+      var _didIteratorError7 = false;
+      var _iteratorError7 = undefined;
+
+      try {
+        for (var _iterator7 = dul.box[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+          var box = _step7.value;
+
+          if (box.val == _val && box.id != this_parent.attr('id')) {
+            bool_box = true;
+          }
+        }
+      } catch (err) {
+        _didIteratorError7 = true;
+        _iteratorError7 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion7 && _iterator7.return) {
+            _iterator7.return();
+          }
+        } finally {
+          if (_didIteratorError7) {
+            throw _iteratorError7;
+          }
         }
       }
 
-      if(!bool_row && !bool_col && !bool_box){
+      if (!bool_row && !bool_col && !bool_box) {
         elem.removeClass('duplicate');
       }
     }
-  }
+  };
 
-  let gameTimer = () => {
-    // Set game timer
-    let getMin = $('.minute').text(),
+  var gameTimer = function gameTimer() {
+    var getMin = $('.minute').text(),
         getSec = $('.second').text();
 
-    // Automatically round up to 1 more minute for every 60 seconds passed
-    if(getSec == '59'){
-			getMin = parseInt(getMin) + 1;
+    if (getSec == '59') {
+      getMin = parseInt(getMin) + 1;
       getSec = '00';
-    } else if(getSec < 9){
-      // Add a zero infront if the number is only a single digit
-      getSec = '0' + ( parseInt(getSec) + 1 );
-    } else{
+    } else if (getSec < 9) {
+      getSec = '0' + (parseInt(getSec) + 1);
+    } else {
       getSec = parseInt(getSec) + 1;
     }
 
     $('.minute').text(getMin);
     $('.second').text(getSec);
-  }
+  };
 
-  let startTimer = () => {
-    // Start game timer
+  var startTimer = function startTimer() {
     timer = setInterval(gameTimer, 1000);
     game_ongoing = true;
-  }
+  };
 
-  let stopTimer = () => {
-    // Stop game timer
+  var stopTimer = function stopTimer() {
     clearInterval(timer);
     game_ongoing = false;
-  }
+  };
 
-  let resetTimer = () => {
-    // Reset game timer
+  var resetTimer = function resetTimer() {
     $('.minute').text('0');
     $('.second').text('00');
-  }
+  };
 
-  let toggleOverlay = (clsName, callback) => {
-    // Toggle overlay animation to show or hide
-    if($('#overlay').css('display') == 'none'){
-      $('#overlay').fadeIn('fast', function(){
+  var toggleOverlay = function toggleOverlay(clsName, callback) {
+    if ($('#overlay').css('display') == 'none') {
+      $('#overlay').fadeIn('fast', function () {
         $(clsName).animate({
-          'top' : 0
-        },500, function(){
-          // Call the callback function if available
-          if(callback){
+          'top': 0
+        }, 500, function () {
+          if (callback) {
             callback();
           }
         });
       });
     } else {
       $(clsName).animate({
-        'top' : '200%'
-      }, 500, function(){
+        'top': '200%'
+      }, 500, function () {
         $('#overlay').fadeOut('fast');
 
-        // Call the callback function if available
-        if(callback){
+        if (callback) {
           callback();
         }
       });
     }
-  }
+  };
 
-  let continueNewLevel = () => {
-    // Stop timer after complete game
+  var continueNewLevel = function continueNewLevel() {
     stopTimer();
 
-    // Always reset the final time displayed
     $('.winMin, .winSec').text("0");
 
-    // Toggle the overlay first and then run the animation.
-    toggleOverlay('.complete', function(){
-      $('.winMin, .winSec').each(function(){
-        let num;
+    toggleOverlay('.complete', function () {
+      $('.winMin, .winSec').each(function () {
+        var num = undefined;
 
-        // Get the number of minute or second accordingly
-        if(this.className == 'winMin'){
+        if (this.className == 'winMin') {
           num = $('.minute').text();
         } else {
           num = $('.second').text();
         }
 
-        // Animate the increasing of number
         $(this).prop('number', 0).animate({
-          number : num
-        },{
-          duration : 1000,
+          number: num
+        }, {
+          duration: 1000,
           easing: 'swing',
-          step : function(now){
+          step: function step(now) {
             $(this).text(Math.ceil(now));
           }
         });
       });
     });
-  }
+  };
 
-  let checkAnswer = () => {
-    // Check number of empty box left
-    let is_empty = false;
+  var checkAnswer = function checkAnswer() {
+    var is_empty = false;
 
-    $('.user_fill').each(function(){
-      if($(this).text() == ''){
+    $('.user_fill').each(function () {
+      if ($(this).text() == '') {
         is_empty = false;
         return false;
       } else {
-        is_empty = true;  
+        is_empty = true;
       }
     });
 
-    // If no empty box, then proceed to check with game solution
-    if(is_empty){
-				let user_sol = [],
+    if (is_empty) {
+      var user_sol = [],
           num = 1;
 
-      // Push every single number into an array
-      do{
-        let sub_arr = [];
+      do {
+        var sub_arr = [];
 
-        do{
+        do {
           sub_arr.push(parseInt($('#box_' + num++ + ' .input_box').text()));
-        } while(sub_arr.length != 9)
+        } while (sub_arr.length != 9);
 
         user_sol.push(sub_arr);
-      } while(user_sol.length != 9)
+      } while (user_sol.length != 9);
 
-      if( user_sol.compare(basic_array) || validateRowCol(user_sol) ){
+      if (user_sol.compare(basic_array) || validateRowCol(user_sol)) {
         continueNewLevel();
       }
     }
-  }
+  };
 
-  let inputNum = (num, keyboard) => {
-    // Only proceed when in user editable box and the entered number is 
-    // different from the current one in the box
-    if( $('.selected').children().hasClass('user_fill') && 
-        $('.selected .user_fill').text() != num ){
-      // key_pressed = allow only single input per keypress
-      if( (!key_pressed && keyboard) || !keyboard ){
-        // Record the next move
+  var inputNum = function inputNum(num, keyboard) {
+    if ($('.selected').children().hasClass('user_fill') && $('.selected .user_fill').text() != num) {
+      if (!key_pressed && keyboard || !keyboard) {
         recordVal(num);
 
-        // Fill the box with the entered number
         $('.selected .user_fill').text(num);
 
         checkDuplicate($('.selected .user_fill'), true);
 
-        $('.duplicate').each(function(){
+        $('.duplicate').each(function () {
           checkDuplicate($(this), false);
         });
 
-        if( !key_pressed && keyboard ){
+        if (!key_pressed && keyboard) {
           key_pressed = true;
         }
 
@@ -775,53 +828,43 @@
     } else {
       console.warn("No cell selected!");
     }
-  }
+  };
 
-  let deleteNum = (keyboard) => {
-    if( $('.selected').children().hasClass('user_fill') && 
-        $('.selected .user_fill').text() != "" ){
-      // key_pressed = allow only single input per keypress
-      if( (!key_pressed && keyboard) || !keyboard ){
-        // Record the next move
+  var deleteNum = function deleteNum(keyboard) {
+    if ($('.selected').children().hasClass('user_fill') && $('.selected .user_fill').text() != "") {
+      if (!key_pressed && keyboard || !keyboard) {
         recordVal("");
 
-        // Empty the box by delete the number
         $('.selected .user_fill').text("");
 
-        $('.duplicate').each(function(){
+        $('.duplicate').each(function () {
           checkDuplicate($(this), false);
         });
 
-        if( !key_pressed && keyboard ){
+        if (!key_pressed && keyboard) {
           key_pressed = true;
         }
       }
     }
-  }
+  };
 
-  let confirmationPopup = (status) => {
-    // Show confirmation popup on restart game or new game while the game is on
-    // going
-    // Stop the timer temporary
+  var confirmationPopup = function confirmationPopup(status) {
     stopTimer();
 
-    // Set the title and the current triggered status
-    if(status == 'new'){
-      $('.confirmation').attr('curr-status','newG');
+    if (status == 'new') {
+      $('.confirmation').attr('curr-status', 'newG');
       $('.confirmation .title').text('Start a new game?');
-    } else if(status == 'restart'){
-      $('.confirmation').attr('curr-status','restartG');
+    } else if (status == 'restart') {
+      $('.confirmation').attr('curr-status', 'restartG');
       $('.confirmation .title').text('Restart game?');
     }
 
-    // Toggle popup overlay
     toggleOverlay('.confirmation');
-  }
+  };
 
-  let undoLastMove = () => {
-    // Undo the last move
-    if(undo_arr.length > 0){
-      let last_move = undo_arr[undo_arr.length - 1];
+  var undoLastMove = function undoLastMove() {
+    if (undo_arr.length > 0) {
+      var last_move = undo_arr[undo_arr.length - 1];
 
       $(last_move.box_id + ' span').text(last_move.prev_box_val);
 
@@ -829,104 +872,91 @@
 
       checkDuplicate($(last_move.box_id + ' span'), true);
 
-      $('.duplicate').each(function(){
+      $('.duplicate').each(function () {
         checkDuplicate($(this), false);
       });
     }
-  }
+  };
 
-  let clearBoard = () => {
-    // Clear board to its original state
+  var clearBoard = function clearBoard() {
     empty_box = 0;
 
-    $('#sdkBoard .input_box').each(function(){
+    $('#sdkBoard .input_box').each(function () {
       $(this).text("").removeClass('fill_lock user_fill');
     });
 
-    $('.duplicate').each(function(){
+    $('.duplicate').each(function () {
       $(this).removeClass('duplicate');
     });
 
     $('.selected, .hovering, .alert').removeClass('selected hovering alert');
-  }
+  };
 
-  let newGame = () => {
-			// Start new game with specified level
-			console.clear();
+  var newGame = function newGame() {
+    console.clear();
 
-			clearBoard();
+    clearBoard();
 
-			resetTimer();
-			stopTimer();
-			startTimer();
+    resetTimer();
+    stopTimer();
+    startTimer();
 
-			for (let count = 1; count <= 2; count++) {
-					shuffleRandom();
-					console.log(">>>Shuffle done = " + (count));
-			}
+    for (var count = 1; count <= 2; count++) {
+      shuffleRandom();
+      console.log(">>>Shuffle done = " + count);
+    }
 
-			generateGame();
+    generateGame();
 
-			fillBoard();
-  }
+    fillBoard();
+  };
 
-  let restartGame = () => {
-			// Restart the same game
-			clearBoard();
+  var restartGame = function restartGame() {
+    clearBoard();
 
-			resetTimer();
-			stopTimer();
-			startTimer();
+    resetTimer();
+    stopTimer();
+    startTimer();
 
-			console.log('Restart Game.');
-			fillBoard();
-  }
+    console.log('Restart Game.');
+    fillBoard();
+  };
 
-  let regEvents = () => {
-    // Start game with level : easy, medium, hard, expert
-    $('#lvl1, #lvl2, #lvl3, #lvl4').on('click',function(){
-      // If a game is currently on going, show popup confirmation first
-			curr_lvl = parseInt($(this).attr('id').split('lvl')[1]) + 2;
+  var regEvents = function regEvents() {
+    $('#lvl1, #lvl2, #lvl3, #lvl4').on('click', function () {
+      curr_lvl = parseInt($(this).attr('id').split('lvl')[1]) + 2;
 
-      if(game_ongoing){
+      if (game_ongoing) {
         confirmationPopup('new');
-      } else{
-        // Set the current level number
+      } else {
         newGame();
       }
     });
 
-    $('.userOk, .userCancel').on('click', function(){
-      // Toggle overlay first and then start the new game
-      toggleOverlay('.confirmation', () => {
-          // Get current status whether is new game or restart game
-          let status = $('.confirmation').attr('curr-status');
+    $('.userOk, .userCancel').on('click', function () {
+      var _this2 = this;
 
-          // Show popup info according to status
-          if(this.className == 'userOk') {
-            if(status == 'newG'){
-              newGame();  
-            } else if (status == 'restartG'){
-              restartGame();
-            }
-          } else{
-            // start timer again if user choose to cancel
-            startTimer();
-            return;
+      toggleOverlay('.confirmation', function () {
+        var status = $('.confirmation').attr('curr-status');
+
+        if (_this2.className == 'userOk') {
+          if (status == 'newG') {
+            newGame();
+          } else if (status == 'restartG') {
+            restartGame();
           }
+        } else {
+          startTimer();
+          return;
         }
-      );
+      });
     });
 
-    $('.continueGame').on('click', function(){
-      // Ask user whether to continue the game with the next difficulty level
-      // after finish each game. Keep going until the hardest difficulty again
-      // and again. 
-      if(curr_lvl){
-        // Toggle popup overlay
-        toggleOverlay('.complete', function(){
+    $('.continueGame').on('click', function () {
+      if (curr_lvl) {
+        toggleOverlay('.complete', function () {
           if (curr_lvl < 6) {
-              curr_lvl += 1;
+            curr_lvl += 1;
           }
 
           newGame();
@@ -934,179 +964,150 @@
       }
     });
 
-    $('#restart').on('click', function(){
-      // If a game is currently on going, show popup confirmation first
-      if(game_ongoing){
+    $('#restart').on('click', function () {
+      if (game_ongoing) {
         confirmationPopup('restart');
-      } else{
+      } else {
         return;
       }
     });
 
-    // Undo the last move
     $('#undo').on('click', undoLastMove);
 
-    // Delete the selected cell
-    $('#delete').on('click', function(){
+    $('#delete').on('click', function () {
       deleteNum(false);
     });
 
-    // About the game and instruction on how to play
-    $('#about, #exit').on('click', function(){
-      // If the game is ongoing, stop timer, and set game_ongoing to true
-      if(this.id == 'about' && game_ongoing) {
+    $('#about, #exit').on('click', function () {
+      var _this3 = this;
+
+      if (this.id == 'about' && game_ongoing) {
         stopTimer();
         game_ongoing = true;
       }
-      
-      toggleOverlay('.about', () => {
-        // If the game is ongoing, just start timer
-        if(this.id == 'exit' && game_ongoing){
+
+      toggleOverlay('.about', function () {
+        if (_this3.id == 'exit' && game_ongoing) {
           startTimer();
         }
       });
     });
 
-    // Highlight selected box by adding specific class
-    $('.box').on('click', function(){
+    $('.box').on('click', function () {
       $('.selected, .alert, .hovering').removeClass('selected alert hovering');
 
-      if($(this).children().hasClass('user_fill')){
+      if ($(this).children().hasClass('user_fill')) {
         $(this).addClass('selected');
-      } else if($(this).children().hasClass('fill_lock')){
+      } else if ($(this).children().hasClass('fill_lock')) {
         $(this).addClass('alert');
       }
     });
 
-    // Add hover class on mouseover, only on user editable box
-    $('.box').on('mouseover', function(){
+    $('.box').on('mouseover', function () {
       $('.hovering').removeClass('hovering');
 
-      if( $(this).children().hasClass('user_fill') && !$(this).hasClass('selected') ){
+      if ($(this).children().hasClass('user_fill') && !$(this).hasClass('selected')) {
         $(this).addClass('hovering');
       } else {
         $('.hovering').removeClass('hovering');
       }
     });
 
-    // Alternate way of entering number using on screen number
-    $('#altInput span').on('click', function(){
-			inputNum($(this).text(), false);
-      // let num = $(this).text();
-
-      // if(isNaN(num)){
-      //   return false;
-      // } else {
-      //   inputNum(num, false);
-      // }
+    $('#altInput span').on('click', function () {
+      inputNum($(this).text(), false);
     });
 
-    $(document).on('keydown', function(e){
-      // Enable undo using ctrl + z
-      if( e.ctrlKey == true && e.which == 90 ){
+    $(document).on('keydown', function (e) {
+      if (e.ctrlKey == true && e.which == 90) {
         undoLastMove();
       }
 
-      // Enable delete using backspace
-      if( e.which == 8 ){
+      if (e.which == 8) {
         deleteNum(true);
       }
 
-      if( e.which >= 37 && e.which <= 40 ){
-        // Navigate the game using arrow keys, first get the current box id, then 
-        // move to the next box accoring to arrow key pressed.
-        let curr_box_val;
+      if (e.which >= 37 && e.which <= 40) {
+        var curr_box_val = undefined;
 
-        if($(this).find('.selected').length > 0){
+        if ($(this).find('.selected').length > 0) {
           curr_box_val = parseInt($('.selected').attr('id').split("_")[1]);
-        } else if($(this).find('.alert').length > 0){
+        } else if ($(this).find('.alert').length > 0) {
           curr_box_val = parseInt($('.alert').attr('id').split("_")[1]);
         }
 
-        // left arrow key
-        if( e.which == 37 ){
+        if (e.which == 37) {
           curr_box_val--;
 
-          if(curr_box_val % 9 == 0){
+          if (curr_box_val % 9 == 0) {
             curr_box_val += 9;
           }
         }
 
-        // up arrow key
-        if( e.which == 38 ){
+        if (e.which == 38) {
           curr_box_val -= 9;
 
-          if(curr_box_val < 0){
+          if (curr_box_val < 0) {
             curr_box_val += 81;
           }
         }
 
-        // right arrow key
-        if( e.which == 39 ){
+        if (e.which == 39) {
           curr_box_val++;
 
-          if(curr_box_val % 9 == 1){
+          if (curr_box_val % 9 == 1) {
             curr_box_val -= 9;
           }
         }
 
-        // down arrow key
-        if( e.which == 40 ){
+        if (e.which == 40) {
           curr_box_val += 9;
 
-          if(curr_box_val > 81){
+          if (curr_box_val > 81) {
             curr_box_val -= 81;
           }
         }
 
         $('.selected, .alert').removeClass('selected alert');
 
-        let curr_box = $('#box_' + curr_box_val);
+        var curr_box = $('#box_' + curr_box_val);
 
-        if(curr_box.children().hasClass('user_fill')){
+        if (curr_box.children().hasClass('user_fill')) {
           curr_box.addClass('selected');
-        } else if(curr_box.children().hasClass('fill_lock')){
+        } else if (curr_box.children().hasClass('fill_lock')) {
           curr_box.addClass('alert');
-        } 
+        }
       }
     });
 
-    $(document).on('keypress', function(e){
-      // Only allows number as input
-      if(!( e.which >= 49 && e.which <= 57 )){
+    $(document).on('keypress', function (e) {
+      if (!(e.which >= 49 && e.which <= 57)) {
         return false;
       } else {
         inputNum(String.fromCharCode(e.keyCode), true);
       }
     });
 
-    // Change key_pressed to false whenever key up
-    $(document).on('keyup', function(){
+    $(document).on('keyup', function () {
       key_pressed = false;
     });
 
-    $(document).on('mousedown', function(e){
-      // prevent text selection
+    $(document).on('mousedown', function (e) {
       e.preventDefault();
 
-      // Deselect selected cell if target is body
-      if(e.target.nodeName.toLowerCase() == 'body'){
+      if (e.target.nodeName.toLowerCase() == 'body') {
         $('.selected, .alert, .hovering').removeClass('selected alert hovering');
       }
     });
-  }
+  };
 
-  $.fn.initGrid = () => {
-    // Initialize sudoku game
-    $('#sdkBoard')
-      .append(generateGrid(true))
-      .find('> table table')
-      .each(function(i){
-        setTimeout(() => {
-          // Animate the grid
-          $(this).addClass('sub_grid');
-        }, 100 * i);
-      });
+  $.fn.initGrid = function () {
+    $('#sdkBoard').append(generateGrid(true)).find('> table table').each(function (i) {
+      var _this4 = this;
+
+      setTimeout(function () {
+        $(_this4).addClass('sub_grid');
+      }, 100 * i);
+    });
 
     console.log("Grid generated.");
 
